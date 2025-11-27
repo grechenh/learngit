@@ -17,6 +17,7 @@ nums = [5, 7, 7, 9, 10, 12, 12, 12, 12, 12, 23, 54, 65]
 target = 12
 
 
+
 def lower_bounds(nums: list[int], target: int) -> int:
     left = 0
     right = len(nums) - 1

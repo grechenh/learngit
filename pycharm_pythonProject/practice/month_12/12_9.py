@@ -33,6 +33,79 @@
 #                                     continue
 #                                 cont.append([a,b,c,d,e,f,g,h])
 # print(len(cont),cont)
+# from copy import copy
+#
+# ans =[]
+# path = [0]*8
+# nums = set(range(8))
+# n = len(nums)
+# def f(i, s):
+#     if i == n:
+#         ans.append(copy(path))
+#         return
+#     for x in s:
+#         path[i] = x
+#         f(i+1,s-{x})
+# f(0, nums)
+# print(ans,len(ans))
+
+# x = []
+#
+#
+# def f(n):
+#     if n == 1:
+#         return 1
+#     if n == 2:
+#         return 1
+#     return f(n - 1) + f(n - 2)
+#
+#
+# for i in range(1, 10000):
+#     x.append(f(i))
+#
+# print(x)
+
+# num = [0] * 10000
+#
+#
+# def f(n):
+#     for i in range(1, n + 1):
+#         if i == 1:
+#             num[i - 1] = 1
+#             continue
+#         if i == 2:
+#             num[i - 1] = 1
+#             continue
+#         num[i - 1] = num[i - 2] + num[i - 3]
+#     return num
+#
+#
+# f(10000)
+# print(num[10000 - 1])
 
 
+# x**2 + x - 5 = 0
+# [-100,-1] [1,100]
+# from cmath import e
+# a = -100
+# b = -1
+# x = (a+b)/2
+# ep = e**-1
+# while abs(x) < ep:
+#     if (x**2 + x - 5)*a < 0:
+#
+# import random
+#
+# x_list = list(range(300))
+# y_list = random.sample(x_list, 30)
+# random.shuffle(y_list)
+# print(y_list)
+#
+# s_dict = dict()
+# for i in range(len(y_list) - 1, 0, -1):
+#     for j in range(i):
+#         if y_list[j] > y_list[j + 1]:
+#             y_list[j], y_list[j + 1] = y_list[j + 1], y_list[j]
+#
+# print(y_list)
 

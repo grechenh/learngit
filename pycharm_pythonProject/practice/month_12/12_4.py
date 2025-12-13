@@ -207,8 +207,6 @@ class BankCLI:
                 except IOError:
                     print("重新输入！")
 
-        pass
-
 
 def main():
     cli = BankCLI()

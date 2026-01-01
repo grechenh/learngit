@@ -1,7 +1,7 @@
-from sqlalchemy.orm import sessionmaker, aliased
+from sqlalchemy.orm import sessionmaker, aliased, join
 
 from models import Base, Category, Article
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, func
 
 engine = create_engine('mysql+mysqldb://root:root@127.0.0.1/homework', echo=True)
 
@@ -70,14 +70,42 @@ def select_from_article_id(article_id: int):
         a = aliased(Article)
         statement = select(a).where(a.id == article_id)
         print(f'statement={statement}')
-        result = select_session.execute(statement).scalar_one_or_none()
+        # result = select_session.execute(statement).scalar_one_or_none()
+        # result = select_session.scalars(statement).one_or_none()
+        result = select_session.scalar(statement)
         print(f'result={result}')
-        # scalar_result = result
-        # print(f'scalar_result={scalar_result}')
+        if result:
+            print(f"结果为：{result.title} {result.category.name} {result.category.description}")
+
+
+def select_from_category_all_count():
+    with Session() as category_all_session:
+        c = aliased(Category)
+        stmt = select(c, func.count(Article.id)).outerjoin(Article, c.id == Article.category_id).group_by(c.id).order_by(c.id)
+        result = category_all_session.execute(stmt)
+        for category, article_count in result:
+            print(f'分类: {category.name}, 文章数量: {article_count}')
+
+
+def select_from_article_category(category_id: int):
+    with Session() as session:
+        a = aliased(Article)
+        stmt = select(a).where(a.category_id == category_id)
+        result = session.scalars(stmt).all()
+        if result:
+            print(f"nums={len(result)}")
+            for article in result:
+                print(f"{article.category.name} {article.title} {article.id}")
+        pass
+    pass
 
 
 if __name__ == '__main__':
     # create_table()
     # insert_data()
-    select_from_article_id(1)
+    # select_from_article_id(1)
+    # select_from_category_all_count()
+    select_from_article_category(1)
     pass
+
+

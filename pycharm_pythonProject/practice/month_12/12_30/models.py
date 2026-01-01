@@ -13,15 +13,15 @@ Base = declarative_base()
 class Category(Base):
     __tablename__ = 'os_category'
     id: Mapped[id_pk]
-    name: Mapped[str] = mapped_column(String(32), nullable=False, default='no name', comment='must')
+    name: Mapped[str] = mapped_column(String(32), nullable=False, unique=True, default='no name', comment='must')
     description: Mapped[str] = mapped_column(Text, nullable=False, default='no description', comment='description')
     create_at: Mapped[create_at]
 
     articles: Mapped[list['Article']] = relationship(
         'Article',
         back_populates='category',
-        # cascade='refresh-expire',
-        passive_deletes=True,
+        # lazy='selectin',
+        cascade='all, delete-orphan'
     )
     pass
 
@@ -51,7 +51,8 @@ class Article(Base):
     category: Mapped[Category] = relationship(
         'Category',
         back_populates='articles',
-        lazy='selectin',
+        passive_deletes=True,
+        lazy='joined',
     )
 
     def __repr__(self):

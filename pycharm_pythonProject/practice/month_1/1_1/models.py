@@ -1,4 +1,3 @@
-import enum
 from datetime import datetime
 from decimal import Decimal
 from typing import Annotated, Optional
@@ -7,7 +6,7 @@ from sqlalchemy import String, Text, Enum, Numeric, ForeignKey
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 id_pk = Annotated[int, mapped_column(primary_key=True, autoincrement=True, comment='pk_id')]
-create_datetime = Annotated[datetime, mapped_column(nullable=False, default=datetime.now(), comment='type datetime')]
+# create_datetime = Annotated[datetime, mapped_column(nullable=False, default=datetime.now, comment='type datetime')]
 
 
 class Base(DeclarativeBase):
@@ -29,14 +28,14 @@ class Category(Base):
 class Movie(Base):
     __tablename__ = 'os_movie'
     id: Mapped[id_pk]
-    title: Mapped[str] = mapped_column(Text, nullable=False, default='no title', comment='Category_title')
+    title: Mapped[str] = mapped_column(String(100), nullable=False, default='no title', comment='Movie_title')
     mins: Mapped[int] = mapped_column(nullable=False, default=0, comment='mins=')
-    summary: Mapped[str] = mapped_column(Text(500), nullable=False, default='no summary', comment='summary')
-    release_date: Mapped[create_datetime]
+    summary: Mapped[str] = mapped_column(Text, nullable=False, default='no summary', comment='summary')
+    release_date: Mapped[Optional[datetime]] = mapped_column(nullable=True, default=None, comment='电影上映日期')
 
     category_id: Mapped[int] = mapped_column(
         ForeignKey(
-            'os_category',
+            'os_category.id',
             ondelete='CASCADE',
             name='fk_movie_category_id'
         ),
@@ -64,7 +63,7 @@ class Actor(Base):
     id: Mapped[id_pk]
     name: Mapped[str] = mapped_column(String(100), nullable=False, comment='Actor_name')
     nickname: Mapped[str] = mapped_column(String(100), nullable=False, comment='Nickname')
-    gender: Mapped[enum] = mapped_column(Enum('男','女'), nullable=False, comment='Actor_gender')
+    gender: Mapped[str] = mapped_column(Enum('男','女'), nullable=False, comment='Actor_gender')
 
     profile: Mapped[Optional['Profile']] = relationship(
         'Profile',
@@ -83,14 +82,14 @@ class Actor(Base):
 class Profile(Base):
     __tablename__ = 'os_profile'
     id: Mapped[id_pk]
-    constellation: Mapped[enum] = mapped_column(Enum('射手座','水瓶座','金牛座','狮子座'), nullable=False, comment='four constellation')
-    blood_type: Mapped[enum] = mapped_column(Enum('A','B','AB','O'), nullable=False, comment='blood_type')
+    constellation: Mapped[str] = mapped_column(Enum('射手座','水瓶座','金牛座','狮子座'), nullable=False, comment='four constellation')
+    blood_type: Mapped[str] = mapped_column(Enum('A','B','AB','O'), nullable=False, comment='blood_type')
     height: Mapped[int] = mapped_column(nullable=False, comment='height(cm)')
     weight: Mapped[Decimal] = mapped_column(Numeric(precision=5, scale=2), nullable=False, comment='max= 999.99 kg')
 
     actor_id: Mapped[int] = mapped_column(
         ForeignKey(
-            'os_profile',
+            'os_actor.id',
             name='fk_profile_actor_id',
             ondelete='CASCADE'
         ),
@@ -109,9 +108,10 @@ class Profile(Base):
 
 
 class MovieActor(Base):
+    __tablename__ = 'os_movieActor'
     movie_id: Mapped[int] = mapped_column(
         ForeignKey(
-            'os_movie',
+            'os_movie.id',
             name='fk_movieActor_movie_id',
             ondelete='CASCADE',
             onupdate='CASCADE'
@@ -130,7 +130,7 @@ class MovieActor(Base):
 
     actor_id: Mapped[int] = mapped_column(
         ForeignKey(
-            'os_actor',
+            'os_actor.id',
             name='fk_movieActor_actor_id',
             ondelete='CASCADE',
             onupdate='CASCADE'

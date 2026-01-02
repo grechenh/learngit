@@ -16,13 +16,16 @@ class Base(DeclarativeBase):
 class Category(Base):
     __tablename__ = 'os_category'
     id: Mapped[id_pk]
-    name: Mapped[str] = mapped_column(String(100), nullable=False, comment='Category_name')
+    name: Mapped[str] = mapped_column(String(100), unique=True, nullable=False, comment='Category_name')
 
     movies: Mapped[list['Movie']] = relationship(
         'Movie',
         back_populates='category',
         cascade="all, delete-orphan"
     )
+
+    def __repr__(self):
+        return f"<Category id={self.id} name={self.name}>"
 
 
 class Movie(Base):
@@ -57,6 +60,9 @@ class Movie(Base):
         cascade='all, delete-orphan'
     )
 
+    def __repr__(self):
+        return f"<Movie id={self.id} title={self.title} mins={self.mins} summary={self.summary} release_date={self.release_date} category_id={self.category_id}>"
+
 
 class Actor(Base):
     __tablename__ = 'os_actor'
@@ -77,6 +83,9 @@ class Actor(Base):
         back_populates='actor',
         cascade='all, delete-orphan'
     )
+
+    def __repr__(self):
+        return f"<Actor id={self.id}  name={self.name}  nickname={self.nickname} gender={self.gender}>"
 
 
 class Profile(Base):
@@ -105,6 +114,9 @@ class Profile(Base):
         passive_deletes=True,
         lazy='joined'
     )
+
+    def __repr__(self):
+        return f"<Profile id={self.id}  constellation={self.constellation}  blood_type={self.blood_type} height={self.height} weight={self.weight} actor_id={self.actor_id}>"
 
 
 class MovieActor(Base):
@@ -146,3 +158,6 @@ class MovieActor(Base):
         passive_deletes=True,
         lazy='joined'
     )
+
+    def __repr__(self):
+        return f"<MovieActor movie_id={self.movie_id}  actor_id={self.actor_id}>"

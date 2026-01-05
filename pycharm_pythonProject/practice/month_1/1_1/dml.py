@@ -1,7 +1,7 @@
 from datetime import datetime
 from decimal import Decimal
 
-from sqlalchemy import create_engine, select
+from sqlalchemy import create_engine, select, func
 from sqlalchemy.orm import sessionmaker
 
 from models import Base, Category, Actor, Profile, MovieActor, Movie
@@ -169,6 +169,19 @@ def select_actor_movieActor_movie(actor_id: int):
             print(movieActor.movie)
 
 
+def select_min():
+    with Session() as session:
+        stmt = select(func.min(Movie.mins)).scalar_subquery()
+        stmt1 = select(Movie).where(Movie.mins == stmt)
+        min = session.scalars(stmt1).all()
+        print(min)
+
+
+def select_max():
+    
+    pass
+
+
 if __name__ == '__main__':
     # crete_table()
     # insert_test()
@@ -177,5 +190,6 @@ if __name__ == '__main__':
     # select_actorID_actor_profile(1)
     # select_movie_movieActor(2)
     # select_actor_movieActor_movie(2)
+    select_min()
     pass
 
